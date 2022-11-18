@@ -1,0 +1,13 @@
+name = "BehavioralSystems"
+uuid = "1f86e1d0-07f4-4cdc-aa25-7c52218f1bad"
+authors = ["Cédric Simal", "University of Namur"]
+version = "0.1.0"
+
+[compat]
+julia = "1"
+
+[extras]
+Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
+
+[targets]
+test = ["Test"]
