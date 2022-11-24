@@ -1,8 +1,4 @@
 
-struct HankelMatrix{M<:AbstractVecOrMat{T},T} <: AbstractMatrix{T}
-    w::M
-    L::Int
-end
 
 """
     hankel_matrix(W, L)
