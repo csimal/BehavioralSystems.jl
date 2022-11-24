@@ -29,7 +29,7 @@
         @test_throws DomainError hankel_projection(H_1, -1)
         @test hankel_projection(H_1,2) == float.(H_1)
         @test hankel_projection(H_1,1) == float.(H_1)
-        @test hankel_projection(1:5, 1) == [1:5;;]
+        @test hankel_projection(1:5, 1) == [1.0:5.0;;]
         @test hankel_projection([1 2 3 4 5], 1) == [1.0 2.0 3.0 4.0 5.0]
         @test hankel_projection(H_2, 2, [4,2]) == float.(H_2)
         @test hankel_projection(H_2, 1, [4,2]) == float.(H_2)

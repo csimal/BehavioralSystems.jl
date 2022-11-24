@@ -123,3 +123,23 @@ function sizes(sys)
     p = size(sys.C,1)
     return (n,m,p)
 end
+
+"""
+    canonical_permutation(m,p,T)
+
+Return the canonical permutation Π that maps a vector `w = [u; y]` with `u` of length `m*T` and `y` of size `p*T` to a vector `[u_1; y_1; ...; u_T; y_T]`.
+
+`u_t` and `y_t` are the successive slices of size `m` and `p` of `u` and `y` respectively.
+
+The result is a vector of size `(m+p)*T` representing the permutation for use with [`permute!`](@ref) or [`permutedims`](@ref)
+"""
+function canonical_permutation(m, p, T)
+    q = m+p
+    Π = Vector{Int}(undef, (m+p)*T)
+    for t in 1:T
+        Π[((t-1)*q) .+ (1:m)] .= ((t-1)*m) .+ (1:m)
+        Π[((t-1)*q) .+ ((m+1):q)] .= (T*m+(t-1)*p)
+        Π[((t-1)*q) .+ ((m+1):q)] .+= (1:p)
+    end
+    return Π
+end

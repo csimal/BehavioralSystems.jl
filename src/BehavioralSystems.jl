@@ -6,7 +6,7 @@ using LinearAlgebra
 using Random
 
 include("utils.jl")
-export drss, random_trajectory, sizes
+export drss, random_trajectory, sizes, canonical_permutation
 
 include("matrices.jl")
 export hankel_matrix, hankel_projection, antidiagonal
