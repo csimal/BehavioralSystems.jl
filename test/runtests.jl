@@ -1,6 +1,9 @@
 using BehavioralSystems
+using ControlSystemsBase
 using Test
 
 @testset "BehavioralSystems.jl" begin
-    # Write your tests here.
+    include("matrices.jl")
+    include("utils.jl")
+    include("behaviors.jl")
 end
