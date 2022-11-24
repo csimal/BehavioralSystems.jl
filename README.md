@@ -5,9 +5,19 @@
 
 This package provides a collection of functions to analyze dynamical systems based on Behavioral Systems Theory. In particular, for LTI systems, we can use tools from linear algebra to determine characteristics of the system from a trajectory.
 
-## Installing
+## Installation
 This package is currently unregistered. To install it, enter the following command in the Julia REPL.
 ```julia-repl
 ] add "https://github.com/csimal/BehavioralSystems.jl.git"
 ```
 
+## Behavioral Approach to Dynamical Systems
+Given a discrete-time LTI state space system $(A,B,C,D)$, with $n$ states, $m$ inputs and $p$ outputs, a *trajectory* of the system is a pair $w=(u,y) \in (\R^m)^\N \times (\R^p)^\N$, such that there is an $x\in (\R^n)^\N$ satisfying for all $t\in\N$,
+- $ x(t+1) = Ax(t) + Bu(t)$
+- $y(t) = Cx(t) + Du(t)$
+
+The set of all trajectories is called the *behavior* $\mathscr{B}$, and completely characterizes our dynamical system. Note that in many cases, the distinction between input and output is not so evident, and so trajectories are actually elements of $(\R^q)^\N$, with $q=m+p$.
+
+For an LTI system, the behavior is a shift-invariant subspace of $(\R^q)^\N$, which allows us to study properties of the system from *restricted behaviors* $\mathscr{B}_T$ obtained from finite time-series of the system.
+
+## Basic usage
