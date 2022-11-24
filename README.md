@@ -12,12 +12,12 @@ This package is currently unregistered. To install it, enter the following comma
 ```
 
 ## Behavioral Approach to Dynamical Systems
-Given a discrete-time LTI state space system $(A,B,C,D)$, with $n$ states, $m$ inputs and $p$ outputs, a *trajectory* of the system is a pair $w=(u,y) \in (\R^m)^\N \times (\R^p)^\N$, such that there is an $x\in (\R^n)^\N$ satisfying for all $t\in\N$,
+Given a discrete-time LTI state space system $(A,B,C,D)$, with $n$ states, $m$ inputs and $p$ outputs, a *trajectory* of the system is a pair $w=(u,y) \in (\mathbb{R}^m)^\mathbb{N} \times (\mathbb{R}^p)^\mathbb{N}$, such that there is an $x\in (\mathb{R}^n)^\N$ satisfying for all $t\in\mathbb{N}$,
 - $ x(t+1) = Ax(t) + Bu(t)$
 - $y(t) = Cx(t) + Du(t)$
 
-The set of all trajectories is called the *behavior* $\mathscr{B}$, and completely characterizes our dynamical system. Note that in many cases, the distinction between input and output is not so evident, and so trajectories are actually elements of $(\R^q)^\N$, with $q=m+p$.
+The set of all trajectories is called the *behavior* $\mathscr{B}$, and completely characterizes our dynamical system. Note that in many cases, the distinction between input and output is not so evident, and so trajectories are actually elements of $(\mathbb{R}^q)^\mathbb{N}$, with $q=m+p$.
 
-For an LTI system, the behavior is a shift-invariant subspace of $(\R^q)^\N$, which allows us to study properties of the system from *restricted behaviors* $\mathscr{B}_T$ obtained from finite time-series of the system.
+For an LTI system, the behavior is a shift-invariant subspace of $(\mathbb{R}^q)^\mathbb{N}$, which allows us to study properties of the system from *restricted behaviors* $\mathscr{B}_T$ obtained from finite time-series of the system.
 
 ## Basic usage
