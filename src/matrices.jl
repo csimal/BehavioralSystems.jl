@@ -44,9 +44,7 @@ function hankel_matrix(W::AbstractMatrix, L)
         throw(DomainError("Not enough samples. T should be larger than L. Got T=$T and L=$L"))
     end
     ℋ = zeros(eltype(W), L*q, T-L+1)
-    for j in 1:T-L+1, i in 1:q, t in 1:L
-        ℋ[(t-1)*q+i,j] = (W[i,(j-1)+t])
-    end
+    hankel_matrix!(ℋ, W, L)
     return ℋ
 end
 
@@ -56,6 +54,13 @@ end
 
 function hankel_matrix(W::AbstractVector, L)
     return hankel_matrix(W', L)
+end
+
+function hankel_matrix!(ℋ, W, L)
+    q, T = size(W)
+    for j in 1:T-L+1, i in 1:q, t in 1:L
+        ℋ[(t-1)*q+i,j] = (W[i,(j-1)+t])
+    end
 end
 
 """
@@ -106,20 +111,41 @@ function hankel_projection(D,L,n)
     ) for i in 1:length(idx)-1]...)
 end
 
-function multiplication_matrix(r::AbstractMatrix, T)
-    
-end
-
-function multiplication_matrix(r::AbstractVector, T)
-    l = length(r)
-    if l > T
-        throw(DomainError(""))
+function multiplication_matrix(r::AbstractMatrix, T, q=1)
+    g = size(r,1)
+    l = div(size(r,2), q) -1
+    if l >= T
+        throw(DomainError("T must be larger than l. Got T=$T and l=$l."))
     end
-    ℳ = zeros(eltype(r), T-l+1, T)
-    for i in axes(ℳ,1), j in eachindex(r)
-        ℳ[i, (i-1) + j] = r[j]
+    ℳ = zeros(eltype(r), g*(T-l), q*T)
+    for i in axes(r,1)
+        multiplication_matrix!(view(ℳ,((i-1)*(T-l)) .+ (1:T-l), :), r[i,:], T, q, l)
     end
     return ℳ
+end
+
+function multiplication_matrix(r::AbstractVector, T, q=1)
+    l = div(length(r), q) -1
+    if l >= T
+        throw(DomainError("T must be larger than l. Got T=$T and l=$l."))
+    end
+    ℳ = zeros(eltype(r), T-l, q*T)
+    multiplication_matrix!(ℳ, r, T, q, l)
+    return ℳ
+end
+
+"""
+    multiplication_matrix!(ℳ, r, T, q, l)
+
+Compute the multiplication matrix of length `T` associated with vector `r` and write it to `ℳ`
+
+For `q>1`, `r` is assumed to be of length `(l+1)*q` and the matrix is constructed with blocks of length `q`.
+"""
+function multiplication_matrix!(ℳ, r::AbstractVector, T, q, l)
+    ℳ .= zero(eltype(r))
+    for i in axes(ℳ,1), j in 1:l+1
+        ℳ[i, ((i+j-2)*q) .+ (1:q)] = r[((j-1)*q) .+ (1:q)]
+    end
 end
 
 function multiplication_projection()
