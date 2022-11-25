@@ -7,12 +7,12 @@ This package provides a collection of functions to analyze dynamical systems bas
 
 ## Installation
 This package is currently unregistered. To install it, enter the following command in the Julia REPL.
-```julia-repl
+```
 ] add "https://github.com/csimal/BehavioralSystems.jl.git"
 ```
 
 ## Behavioral Approach to Dynamical Systems
-Given a discrete-time LTI state space system $(A,B,C,D)$, with $n$ states, $m$ inputs and $p$ outputs, a *trajectory* of the system is a pair $w=(u,y) \in (\mathbb{R}^m)^\mathbb{N} \times (\mathbb{R}^p)^\mathbb{N}$, such that there is an $x\in (\mathb{R}^n)^\N$ satisfying for all $t\in\mathbb{N}$,
+Given a discrete-time LTI state space system $(A,B,C,D)$, with $n$ states, $m$ inputs and $p$ outputs, a *trajectory* of the system is a pair $w=(u,y) \in (\mathbb{R}^m)^\mathbb{N} \times (\mathbb{R}^p)^\mathbb{N}$, such that there is an $x\in (\mathbb{R}^n)^\mathbb{N}$ satisfying for all $t\in\mathbb{N}$,
 - $ x(t+1) = Ax(t) + Bu(t)$
 - $y(t) = Cx(t) + Du(t)$
 
