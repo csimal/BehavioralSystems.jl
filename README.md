@@ -13,7 +13,7 @@ This package is currently unregistered. To install it, enter the following comma
 
 ## Behavioral Approach to Dynamical Systems
 Given a discrete-time LTI state space system $(A,B,C,D)$, with $n$ states, $m$ inputs and $p$ outputs, a *trajectory* of the system is a pair $w=(u,y) \in (\mathbb{R}^m)^\mathbb{N} \times (\mathbb{R}^p)^\mathbb{N}$, such that there is an $x\in (\mathbb{R}^n)^\mathbb{N}$ satisfying for all $t\in\mathbb{N}$,
-- $ x(t+1) = Ax(t) + Bu(t)$
+- $x(t+1) = Ax(t) + Bu(t)$
 - $y(t) = Cx(t) + Du(t)$
 
 The set of all trajectories is called the *behavior* $\mathscr{B}$, and completely characterizes our dynamical system. Note that in many cases, the distinction between input and output is not so evident, and so trajectories are actually elements of $(\mathbb{R}^q)^\mathbb{N}$, with $q=m+p$.
