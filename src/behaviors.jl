@@ -1,15 +1,45 @@
 
+"""
+    BehaviorRepresentation
+
+The abstract for representations of the behavior of an LTI system.
+"""
 abstract type BehaviorRepresentation end
 
+"""
+    StateSpaceRepresentation{T,P} <: BehaviorRepresentation
+
+A representation of the behavior using state space parameters A, B, C, D and a permutation that distinguishes inputs from outputs.
+
+`w = [u, y]` is trajectory of the system if there exists `x` such that
+- ``σx = Ax + Bu``
+- ``y = Cx + Du``
+"""
 struct StateSpaceRepresentation{T<:StateSpace,P} <: BehaviorRepresentation 
     sys::T
     Π::P
 end
 
+"""
+    DataDrivenRepresentation{T} <: BehaviorRepresentation
+
+A representation of the behavior using the Hankel matrix ℋ of a trajectory.
+
+`w` is a trajectory of the system if ``w \\in \\range (ℋ)``
+"""
 struct DataDrivenRepresentation{T<:AbstractMatrix} <: BehaviorRepresentation
     H::T
 end
 
+basis(ddr::DataDrivenRepresentation) = range_basis(ddr.H)
+
+"""
+    KernelRepresentation{T} <: BehaviorRepresentation
+
+A representation of the behavior as the kernel of an operator `R`.
+
+`w` is a trajectory of the system if ``R(σ)w = 0``
+"""
 struct KernelRepresentation{T<:AbstractMatrix} <: BehaviorRepresentation
     R::T
 end
@@ -80,14 +110,15 @@ end
 
 function ss2r_modelbased(sys::StateSpace)
     n,m,p = sizes(sys)
-    l = lag_model_based(sys)
-    M = ss2BT_modelbased(sys, nothing, l)
-    rows = m*l+1:(m+p)*l
-    O = M[rows, 1:n]
-    C = M[rows,n+1:end]
-    tmp = O*pinv(O)
-    
-    return [tmp*C -(tmp+I)]
+    q = m + p
+    l = lag_modelbased(sys)
+    M = ss2BT_modelbased(sys, nothing, l+1)
+    O = M[m*(l+1)+1:end-p, 1:n]
+    C = M[m*(l+1)+1:end,n+1:end]
+    R_y = sys.C * sys.A^(l) * pinv(O)
+    R_u = R_y * C[1:end-p,:] + C[end-p+1:end,:]
+
+    return [R_u -R_y -I]
 end
 
 """
@@ -96,15 +127,20 @@ end
 Compute a Kernel Representation of 
 """
 function ss2r_datadriven(w, L)
-    kernel_basis(hankel_matrix(w,L))
+    kernel_basis(hankel_matrix(w,L))'
 end
 
 function ss2r_datadriven(sys::StateSpace)
-
+    n,m,_ = sizes(sys)
+    l = lag_datadriven(sys) + 1
+    w = random_trajectory(sys, (m+1)*l+n)
+    return ss2r_datadriven(w, l)
 end
 
 """
     r2BT(R,T)
+
+Compute a basis for the restricted behavior ℬ_T
 """
 function r2BT(R,T)
     return kernel_basis(multiplication_matrix(R,T))

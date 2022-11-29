@@ -168,7 +168,7 @@ end
 """
     kernel_basis(A)
 
-Find an orthonormal basis of the kernel of `A`.
+Find an orthonormal basis of the left kernel of `A`.
 
 See also [`range_basis`](@ref) and [`compare_spans`](@ref)
 """

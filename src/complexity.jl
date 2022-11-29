@@ -92,7 +92,7 @@ The complexity is given by a triplet `(n,m,l)` where `n` is the number of states
 function complexity_modelbased(sys::StateSpace)
     n,m,_ = sizes(sys)
     l = lag_modelbased(sys)
-    return (n,m,l)
+    return m,n,l
 end
 
 """
@@ -103,13 +103,9 @@ Estimate the complexity of a LTI system based on one of its trajectories.
 
 """
 function complexity_datadriven(w::AbstractMatrix)
-    T = size(w,2)
     l_max = _findmax_rank(w) # after that point, we don't have enough data to correctly estimate the rank
     r_max = rank(ss2BT_hankel(w,l_max))
     m = r_max - rank(ss2BT_hankel(w,l_max-1)) # get the best estimate we can for m
     n = r_max - m*l_max
-    if n > T
-        throw(DomainError(""))
-    end
-    return n, m, lag_datadriven(w, m, n)
+    return m, n, lag_datadriven(w, m, n)
 end

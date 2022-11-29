@@ -19,5 +19,10 @@ export ss2r_modelbased, ss2r_datadriven
 
 include("complexity.jl")
 export lag_modelbased, lag_datadriven
+export complexity_modelbased, complexity_datadriven
+
+include("mpum.jl")
+export complexity_mpum
+
 
 end
