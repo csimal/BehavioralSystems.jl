@@ -47,4 +47,12 @@
         @test multiplication_matrix([1:5 6:10]', 6) == [1 2 3 4 5 0; 0 1 2 3 4 5; 6 7 8 9 10 0; 0 6 7 8 9 10]
         @test multiplication_matrix([1:4 5:8]', 3, 2) == [1 2 3 4 0 0; 0 0 1 2 3 4; 5 6 7 8 0 0; 0 0 5 6 7 8]
     end
+    @testset "Multiplication Projection" begin
+        local A = multiplication_matrix(1:5, 5)
+        @test multiplication_projection(A,1,1) == float.(A)
+        @test multiplication_projection(A,1,5) == float.(A)
+        @test multiplication_projection(multiplication_matrix(1:5,6), 1, 1) == float.(multiplication_matrix(1:5,6))
+        local B = multiplication_matrix([1 2 3 4 5; 6 7 8 9 10], 6)
+        @test multiplication_projection(B,2,1) == float.(B)
+    end
 end

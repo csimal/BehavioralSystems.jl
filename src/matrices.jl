@@ -17,10 +17,10 @@ julia> hankel_matrix(1:5, 2)
  1  2  3  4
  2  3  4  5
 
- julia> x = [1:5;;1:5]'
- 2×5 adjoint(::Matrix{Int64}) with eltype Int64:
-  1  2  3  4  5
-  1  2  3  4  5
+julia> x = [1:5;;1:5]'
+2×5 adjoint(::Matrix{Int64}) with eltype Int64:
+ 1  2  3  4  5
+ 1  2  3  4  5
 
 julia> hankel_matrix(x, 2)
 4×4 Matrix{Int64}:
@@ -111,6 +111,40 @@ function hankel_projection(D,L,n)
     ) for i in 1:length(idx)-1]...)
 end
 
+"""
+    multiplication_matrix(r, T, q=1)
+
+Compute the multiplication matrix ℳ_T associated to `r`.
+
+The result depends on the shape of `r`.
+- If `r` is a row or column vector, the result is a `T-length(r) × T` matrix whose consists of shifted copies of `r`. If `q` is greater than 1, `r` is shifted by `q` elements each time.
+- If `r` is a matrix, the multiplication matrices of each row are concatenated along their columns.
+
+## Examples
+```jldoctest
+julia> multiplication_matrix(1:5, 5)
+1×5 Matrix{Int64}:
+ 1  2  3  4  5
+
+julia> multiplication_matrix(1:5, 6)
+2×6 Matrix{Int64}:
+ 1  2  3  4  5  0
+ 0  1  2  3  4  5
+
+julia> multiplication_matrix(1:4, 4, 2)
+3×8 Matrix{Int64}:
+ 1  2  3  4  0  0  0  0
+ 0  0  1  2  3  4  0  0
+ 0  0  0  0  1  2  3  4
+
+julia> multiplication_matrix([1 2 3 4 5; 6 7 8 9 10], 6)
+4×6 Matrix{Int64}:
+ 1  2  3  4   5   0
+ 0  1  2  3   4   5
+ 6  7  8  9  10   0
+ 0  6  7  8   9  10
+```
+"""
 function multiplication_matrix(r::AbstractMatrix, T, q=1)
     g = size(r,1)
     l = div(size(r,2), q) -1
@@ -148,8 +182,52 @@ function multiplication_matrix!(ℳ, r::AbstractVector, T, q, l)
     end
 end
 
-function multiplication_projection()
-    
+"""
+    multiplication_projection(D, p, q)
+
+Compute the orthogonal projection of `D` on the space of multiplication matrices, assuming blocks of size `p × q`.
+"""
+function multiplication_projection(D::AbstractMatrix, p, q)
+    T = div(size(D,2), q)
+    @assert size(D,2) == q*T
+    l = T - div(size(D,1), p)
+    @assert size(D,1) == p*(T-l)
+    R = zeros(p, q*(l+1))
+    for i in 1:p
+        multiplication_projection!(
+            view(R, i, :), 
+            view(D, (i-1)*(T-l) .+ (1:T-l), :), 
+            q, 
+            T, 
+            l
+        )
+    end
+    return multiplication_matrix(R, T, q)
+end
+
+function multiplication_projection(D::AbstractMatrix, q)
+    T = div(size(D,2), q)
+    @assert size(D,2) == q*T
+    l = T - size(D,1)
+    @assert l < T
+    R = zeros(q*(l+1))
+    multiplication_projection!(R, D, q, T, l)
+    return multiplication_matrix(R, T, q)
+end
+
+"""
+    multiplication_projection!(R, D, q, T, l)
+
+Compute the orthogonal projection of `D` on the space of multiplication matrices and write it to `R`.
+
+`D` is assumed to be of size `T-l × q*T` and `R` is assumed to be size `(l+1)*q`.
+"""
+function multiplication_projection!(R, D, q, T, l)
+    cols = 1:(l+1)*q
+    for t in 1:T-l
+        R .+= D[t, (t-1)*q .+ cols]
+    end
+    R ./= (T-l)
 end
 
 """
