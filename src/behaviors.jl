@@ -124,7 +124,7 @@ end
 """
     ss2r_datadriven(w,L)
 
-Compute a Kernel Representation of 
+Compute a Kernel Representation of the behavior of a state space system based on one of its trajectories.
 """
 function ss2r_datadriven(w, L)
     kernel_basis(hankel_matrix(w,L))'
@@ -140,8 +140,12 @@ end
 """
     r2BT(R,T)
 
-Compute a basis for the restricted behavior ℬ_T
+Compute a basis for the restricted behavior ℬ_T from the parameter `R` of a kernel representation of ℬ
 """
 function r2BT(R,T)
-    return kernel_basis(multiplication_matrix(R,T))
+    return nullspace(multiplication_matrix(R,T))
+end
+
+function r2BT(ℬ::KernelRepresentation, T)
+    return r2BT(ℬ.R, T)
 end
