@@ -1,7 +1,7 @@
 
 function most_powerful_unfalsified_model(w::AbstractMatrix)
     _, _, l = complexity_mpum(w)
-    return kernel_basis(hankel_matrix(w,l+1))
+    return ss2r_datadriven(w,l+1)
 end
 
 """
