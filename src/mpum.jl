@@ -11,12 +11,12 @@ Compute the complexity of the most powerful unfalsified model that generates `w`
 """
 function complexity_mpum(w::AbstractMatrix)
     q,T = size(w)
-    l_max = floor((T+1)/(q+1))
+    l_max = floor(Int, (T+1)/(q+1))
     l_mpum = 1
     m_mpum, n_mpum = estimate_complexity(w, l_mpum)
     for l in 2:l_max
         m, n = estimate_complexity(w,l)
-        if m < m_mpum || n < n_mpum
+        if n > 0 && m > 0 && m < m_mpum || n < n_mpum
             l_mpum = l
             m_mpum = m
             n_mpum = n

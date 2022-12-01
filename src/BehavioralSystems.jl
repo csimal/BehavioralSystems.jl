@@ -4,6 +4,7 @@ using ControlSystemsBase
 using Optimization
 using LinearAlgebra
 using Random
+using Lasso
 
 include("utils.jl")
 export drss, random_trajectory, sizes, canonical_permutation
@@ -22,7 +23,9 @@ export lag_modelbased, lag_datadriven
 export complexity_modelbased, complexity_datadriven
 
 include("mpum.jl")
-export complexity_mpum
+export complexity_mpum, most_powerful_unfalsified_model
 
+include("interpolation.jl")
+export data_interpolation
 
 end

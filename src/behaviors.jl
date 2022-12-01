@@ -97,7 +97,7 @@ end
 
 Compute an orthonormal basis of ℬ_L using the Hankel matrix of a trajectory `w`.
 """
-function ss2BT_hankel(w::AbstractMatrix,L)
+function ss2BT_hankel(w,L)
     ℋ = hankel_matrix(w,L)
     return range_basis(ℋ)
 end
