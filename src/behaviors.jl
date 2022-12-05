@@ -54,7 +54,7 @@ function ss2BT_modelbased(sys::StateSpace,Π,T)
     n = size(A,1)
     m = size(B,2)
     p = size(C,1)
-    M = [zeros(m*T,n) I; zeros(p*T, n+m*T)]
+    M = [zeros(eltype(A), m*T,n) I; zeros(eltype(A), p*T, n+m*T)]
     O = copy(C) 
     M[(m*T+1):(m*T+p), 1:n] .= C
     for t in 1:T
@@ -63,6 +63,7 @@ function ss2BT_modelbased(sys::StateSpace,Π,T)
         M[rows,cols] .= D
     end
     for t in 2:T
+        O *= A
         rows = m*T + (t-1)*p .+ (1:p)
         M[rows,1:n] .= O
         for s in t:T
@@ -70,7 +71,6 @@ function ss2BT_modelbased(sys::StateSpace,Π,T)
             cols_ = n + (s-t)*m .+ (1:m)
             M[rows_,cols_] .= O*B
         end
-        O *= A
     end
     return M
 end
