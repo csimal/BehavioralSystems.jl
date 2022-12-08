@@ -21,3 +21,4 @@ The set of all trajectories is called the *behavior* $\mathscr{B}$, and complete
 For an LTI system, the behavior is a shift-invariant subspace of $(\mathbb{R}^q)^\mathbb{N}$, which allows us to study properties of the system from *restricted behaviors* $\mathscr{B}_T$ obtained from finite time-series of the system.
 
 ## Basic usage
+See `/notebooks` for a showcase of the current features.
