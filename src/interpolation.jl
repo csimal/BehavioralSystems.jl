@@ -87,39 +87,59 @@ function data_simulation(w_d, w_ini, w_input, p)
     return data_simulation(w_d, w_ini, obfuscate_output(w_input, p))
 end
 
-function impulse_response(w_d, m, T)
+function impulse_response(sys::StateSpace, T)
+    l = lag_datadriven(sys)
+    n,m,_ = sizes(sys)
+    imp = impulse(sys, l+1)
+    w_d = random_trajectory(sys, (m+1)*T + n)
+    return impulse_response(w_d, imp.y, m, T)
+end
+
+function impulse_response(w_d, y_ini, m, T)
     q = size(w_d, 1)
     y = zeros(eltype(w_d), q-m, T, m) 
     for i in 1:m
-        w = impulse_response(w_d, i, m, T)
+        w = impulse_response(w_d, y_ini[:,:,i], i, m, T)
         y[:,:,i] .= w[m+1:end,:]
     end
     return y
 end
 
-function impulse_response(w_d, i, m, T)
+function impulse_response(w_d, y_ini, i, m, T)
     q = size(w_d,1)
-    w_ini = zeros(q,1)
-    w_ini[i] = 1.0
-    w_input = zeros(q,T-1)
+    l = trajectory_length(y_ini)
+    w_ini = zeros(q,l)
+    w_ini[i,1] = 1.0
+    w_ini[m+1:end,:] .= y_ini
+    w_input = zeros(q,T-l)
     return data_simulation(w_d, w_ini, w_input, q-m)
 end
 
-function step_response(w_d, m, T)
+function step_response(sys::StateSpace, T)
+    l = lag_datadriven(sys)
+    n,m,_ = sizes(sys)
+    imp = step(sys, l+1)
+    w_d = random_trajectory(sys, (m+1)*T + n)
+    return step_response(w_d, imp.y, m, T)
+end
+
+function step_response(w_d, y_ini, m, T)
     q = size(w_d, 1)
     y = zeros(eltype(w_d), q-m, T, m) 
     for i in 1:m
-        w = step_response(w_d, i, m, T)
+        w = step_response(w_d, y_ini[:,:,i], i, m, T)
         y[:,:,i] .= w[m+1:end,:]
     end
     return y
 end
 
-function step_response(w_d, i, m, T)
+function step_response(w_d, y_ini, i, m, T)
     q = size(w_d,1)
-    w_ini = zeros(q,1)
-    w_ini[i] = 1.0
-    w_input = zeros(q,T-1)
+    l = trajectory_length(y_ini)
+    w_ini = zeros(q,l)
+    w_ini[i,:] .= 1.0
+    w_ini[m+1:end,:] .= y_ini
+    w_input = zeros(q,T-l)
     w_input[i,:] .= 1.0
     return data_simulation(w_d, w_ini, w_input, q-m)
 end

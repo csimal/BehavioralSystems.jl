@@ -11,7 +11,7 @@ Compute the complexity of the most powerful unfalsified model that generates `w`
 """
 function complexity_mpum(w::AbstractMatrix)
     q,T = size(w)
-    l_max = floor(Int, (T+1)/(q+1))
+    l_max = floor(Int, (T+1)/(q+1)) - 1
     m, n = estimate_complexity(w, l_max)
     l = lag_datadriven(w, m, n)
     return m, n, l
@@ -26,6 +26,6 @@ function estimate_complexity(w::AbstractMatrix, l)
     r_1 = rank(hankel_matrix(w,l-1))
     r_2 = rank(hankel_matrix(w,l))
     m = r_2 - r_1
-    n = r_1 - (l+1)*m
+    n = r_1 - (l-1)*m
     return m, n
 end

@@ -143,3 +143,6 @@ function canonical_permutation(m, p, T)
     end
     return Π
 end
+
+trajectory_length(w::AbstractVector) = length(w)
+trajectory_length(w::AbstractMatrix) = size(w,2)
