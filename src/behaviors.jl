@@ -97,15 +97,19 @@ end
 
 Compute an orthonormal basis of ℬ_L using the Hankel matrix of a trajectory `w`.
 """
-function ss2BT_hankel(w,L)
+function ss2BT_hankel(w,L; basis=true)
     ℋ = hankel_matrix(w,L)
-    return range_basis(ℋ)
+    if basis
+        return range_basis(ℋ)
+    else
+        return ℋ
+    end
 end
 
-function ss2BT_hankel(sys::StateSpace, L)
+function ss2BT_hankel(sys::StateSpace, L; kw...)
     n,m,_ = sizes(sys)
     w = random_trajectory(sys,(m+1)*L+n)
-    return ss2BT_hankel(w, L)
+    return ss2BT_hankel(w, L; kw...)
 end
 
 function ss2r_modelbased(sys::StateSpace)

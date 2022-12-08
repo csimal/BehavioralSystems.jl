@@ -1,5 +1,6 @@
 using BehavioralSystems
 using ControlSystemsBase
+using LinearAlgebra
 using Test
 
 @testset "BehavioralSystems.jl" begin

@@ -86,7 +86,7 @@ function random_trajectory(sys, T)
     n,m,_ = sizes(sys)
     u = rand(m,T)
     x₀ = rand(n)
-    y = lsim(sys, u, 1:T; x0=x₀)[1]
+    y = lsim(sys, u, 0:T-1; x0=x₀)[1]
     return [u; y]
 end
 
@@ -98,7 +98,7 @@ function random_trajectory!(w, sys, T)
     u = rand(m,T)
     w[1:m,:] .= u
     x₀ = rand(n)
-    y = lsim(sys, u, 1:T; x0=x₀)[1]
+    y = lsim(sys, u, 0:T-1; x0=x₀)[1]
     w[m+1:end,:] .= y
     return w
 end

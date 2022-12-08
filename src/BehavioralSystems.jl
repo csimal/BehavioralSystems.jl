@@ -26,6 +26,7 @@ include("mpum.jl")
 export complexity_mpum, most_powerful_unfalsified_model
 
 include("interpolation.jl")
-export data_interpolation
+export data_interpolation, data_simulation
+export impulse_response, step_response
 
 end

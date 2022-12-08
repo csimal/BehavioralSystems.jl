@@ -239,7 +239,7 @@ See also [`kernel_basis`](@ref) and [`compare_spans`](@ref)
 """
 function range_basis(A::AbstractMatrix)
     F = svd(A)
-    r = rank(A) # NB. This is horribly inefficient, since we can get the rank from the QR decomposition we just computed
+    r = _rank(F) 
     return F.U[:,1:r]
 end
 
@@ -266,4 +266,27 @@ function compare_spans(P, Q)
     end
     C = P' * Q
     return !any(all(x -> isapprox(x,0.0), C[i,j] for j in axes(C,2)) for i in axes(C,1))
+end
+
+# Evil Type piracy
+function _rank(F::SVD; atol=1e-10, rtol=1e-10)
+    r = 0
+    ϵ = max(atol, rtol*minimum(size(F)) * F.S[1])
+    for σ in F.S
+        if σ < ϵ
+            return r
+        else
+            r += 1
+        end
+    end
+    return r
+end
+
+function low_rank_approximation(A, r)
+    F = svd(A)
+    if _rank(F) > r
+        return F.U[:,1:r] * Diagonal(F.S[1:r]) * F.Vt[1:r,:]
+    else
+        return A
+    end
 end
